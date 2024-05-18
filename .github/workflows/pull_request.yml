@@ -1,0 +1,40 @@
+name: Pull Request Validation
+
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'info'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '*.go'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ vars.COLABSHIELD_GO_VERSION }}
+
+    - name: Install Report Generator
+      if: ${{ success() }}
+      run: |
+        go install github.com/becheran/go-testreport@latest
+    
+    - name: Install Dependencies
+      if: ${{ success() }}
+      run: |
+        go mod download
+    
+    - name: Test
+      if: ${{ success() }}
+      run: |
+        go test ./... -json | go-testreport $GITHUB_STEP_SUMMARY    

@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "cliCommandName",
+            "type": "promptString",
+            "description": "Name of the command",
+        }
+    ],
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Go Build CLI",
+            "command": "go build -o ${workspaceFolder}/.colabshield",
+            "group": "build",
+            "detail": "Builds the CLI Executable to the .colabshield directory"
+        },
+        {
+            "type": "shell",
+            "label": "Dummy Claim Request",
+            "command": "./tools/dummy_claim.sh",
+            "group": "none",
+            "detail": "Sends a dummy claim request to the server"
+        },
+        {
+            "type": "shell",
+            "label": "New CLI command",
+            "command": "cobra-cli add ${input:cliCommandName}",
+            "group": "none",
+            "detail": "creates a new CLI command"
+        }
+    ]
+}
